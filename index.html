@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD de Alumnos</title>
+    <script defer src="/app.js"></script>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #e74c3c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #34495e;
+        }
+        th {
+            background-color: #e74c3c;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #34495e;
+        }
+        tr:hover {
+            background-color: #1abc9c;
+        }
+        button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #c0392b;
+        }
+        .form-container {
+            display: flex;
+            justify-content: space-between; /* Espacio entre formularios */
+            margin-top: 20px;
+        }
+        .form-section {
+            width: 48%; /* Ancho de cada formulario */
+            padding: 20px;
+            background-color: #34495e;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="date"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus {
+            border-color: #e74c3c;
+            outline: none;
+        }
+        .search-container {
+            position: relative;
+            display: flex;
+            justify-content: flex-end; /* Alinear a la derecha */
+            margin-bottom: 20px; /* Añadir espacio debajo */
+        }
+        #search {
+            width: 200px; /* Establecer un ancho específico para la barra de búsqueda */
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            transition: border-color 0.3s ease;
+        }
+        #search:focus {
+            border-color: #e74c3c;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Buscar por nombre..." oninput="filtrarDatos()">
+    </div>
+    <h1>Lista de Alumnos</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Sexo</th>
+                <th>Lenguaje Favorito</th>
+                <th>Promedio Primaria</th>
+                <th>Promedio Secundaria</th>
+                <th>Promedio Preparatoria</th>
+                <th>Promedio Actual</th>
+                <th>Salario Esperado</th>
+                <th>Color Favorito</th>
+                <th>Marca de Ropa</th>
+                <th>Marca de Celular</th>
+                <th>Materia Favorita</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="personas-table"></tbody>
+    </table>
+    
+    <div class="form-container">
+        <div class="form-section">
+            <h2>Agregar Alumno</h2>
+            <form id="persona-form">
+                <input type="text" id="nombre" placeholder="Nombre" required>
+                <input type="text" id="apellido" placeholder="Apellido" required>
+                <input type="date" id="fecha_nacimiento" placeholder="Fecha de Nacimiento" required>
+                <input type="text" id="sexo" placeholder="Sexo" required>
+                <input type="text" id="lenguaje_favorito" placeholder="Lenguaje Favorito" required>
+                <input type="number" step="0.1" id="promedio_primaria" placeholder="Promedio Primaria" required>
+                <input type="number" step="0.1" id="promedio_secundaria" placeholder="Promedio Secundaria" required>
+                <input type="number" step="0.1" id="promedio_preparatoria" placeholder="Promedio Preparatoria" required>
+                <input type="number" step="0.1" id="promedio_actual" placeholder="Promedio Actual" required>
+                <input type="text" id="salario_esperado" placeholder="Salario Esperado" required>
+                <input type="text" id="color_favorito" placeholder="Color Favorito" required>
+                <input type="text" id="marca_ropa" placeholder="Marca de Ropa" required>
+                <input type="text" id="marca_celular" placeholder="Marca de Celular" required>
+                <input type="text" id="materia_favorita" placeholder="Materia Favorita" required>
+                <button type="submit">Agregar</button>
+            </form>
+        </div>
+        
+        <div class="form-section">
+            <h2>Modificar Alumno</h2>
+            <form id="modificar-form">
+                <input type="hidden" id="modificar-id">
+                <input type="text" id="modificar-nombre" placeholder="Nombre" required>
+                <input type="text" id="modificar-apellido" placeholder="Apellido" required>
+                <input type="date" id="modificar-fecha_nacimiento" placeholder="Fecha de Nacimiento" required>
+                <input type="text" id="modificar-sexo" placeholder="Sexo" required>
+                <input type="text" id="modificar-lenguaje_favorito" placeholder="Lenguaje Favorito" required>
+                <input type="number" step="0.1" id="modificar-promedio_primaria" placeholder="Promedio Primaria" required>
+                <input type="number" step="0.1" id="modificar-promedio_secundaria" placeholder="Promedio Secundaria" required>
+                <input type="number" step="0.1" id="modificar-promedio_preparatoria" placeholder="Promedio Preparatoria" required>
+                <input type="number" step="0.1" id="modificar-promedio_actual" placeholder="Promedio Actual" required>
+                <input type="text" id="modificar-salario_esperado" placeholder="Salario Esperado" required>
+                <input type="text" id="modificar-color_favorito" placeholder="Color Favorito" required>
+                <input type="text" id="modificar-marca_ropa" placeholder="Marca de Ropa" required>
+                <input type="text" id="modificar-marca_celular" placeholder="Marca de Celular" required>
+                <input type="text" id="modificar-materia_favorita" placeholder="Materia Favorita" required>
+                <button type="submit">Modificar</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
